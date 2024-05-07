@@ -1,0 +1,147 @@
+.card-container {
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  margin: 0 auto;
+  width: 85vw;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.card-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 30px;
+  color: #4879B2;
+  cursor: pointer;
+}
+
+.card-list {
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+  border-top: 1px solid grey;
+  cursor: pointer;
+}
+
+.card-item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+    &&:hover {
+      background-color: #f0f0f0;
+    }
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px;
+}
+
+.avatar {
+  width: 60px;
+  border-radius: 50%;
+}
+.title-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #282c34;
+}
+.sub-title-text {
+  display: flex;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+}
+.main-text {
+  font-weight: bold;
+  font-size: 16px;
+  padding-bottom: 5px;
+}
+.sub-text {
+  font-size: 16px;
+  color: gray;
+  padding-bottom: 3px;
+}
+.card-footer {
+  display: flex;
+  flex-direction: row;
+  padding-top: 10px;
+}
+
+.save-button {
+  width: 100px;
+  height: 40px;
+  padding: 0 14px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #4879B2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+.delete-button {
+  width: 100px;
+  height: 40px;
+  padding: 0 14px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: white;
+  color: #ff0000;
+  border:1px solid lightgray;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.radio-items {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-bottom: 1px solid lightgray;
+  padding: 5px 0;
+  margin-top: 10px;
+}
+
+.input-container {
+   display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+
+.input-field {
+  height: 30px;
+  border:1px solid grey;
+  border-radius: 4px;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: grey;
+  margin: 20px 0;
+}
