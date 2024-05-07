@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User  # Add this import statement
+from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from .models import TeamMember
@@ -16,7 +16,7 @@ class TeamMemberSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user', None)
         user = None
         if user_data:
-            user = User.objects.create_user(**user_data)  # Fix the NameError here
+            user = User.objects.create_user(**user_data)
         team_member = TeamMember.objects.create(user=user, **validated_data)
         return team_member
 

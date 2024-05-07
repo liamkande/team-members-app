@@ -1,11 +1,11 @@
 from rest_framework import generics
-from rest_framework.permissions import AllowAny  # Import AllowAny permission
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import TeamMember
 from .serializers import TeamMemberSerializer
-from django.contrib.auth.models import User  # Import User model
+from django.contrib.auth.models import User
 from .serializers import TeamMemberSerializer
 
 # Use TokenObtainPairView for token authentication
