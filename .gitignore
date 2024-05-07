@@ -1,0 +1,24 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# Django-specific entries
+venv/
+team_management/team_management/settings/local.py
+*.sqlite3
+team_management/team_management/static/
+team_management/media/
+.vscode/
+backend/.idea/
+*.pyc
+__pycache__/
+.env
+.venv/
+Pipfile.lock
+*.log
+*.tmp
+
+.idea
