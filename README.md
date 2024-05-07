@@ -1,6 +1,8 @@
 # Team Management Application
 This is a simple Django project for managing team members. It includes CRUD operations for adding, viewing, editing, and deleting team members.
 
+### Time spent: 6 hours spent in total
+
 ## Getting Started
 
 Follow these instructions to get the project up and running on your local machine.
