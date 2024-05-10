@@ -3,6 +3,17 @@ This is a simple Django project for managing team members. It includes CRUD oper
 
 ### Time spent: 6 hours spent in total
 
+### If i had more time i would have added more features like:
+- input validation
+- Search functionality
+- Pagination       
+- Sorting
+- Filtering
+- User authentication
+- User roles and permissions
+- Unit tests
+- Dockerize the application
+
 ## Getting Started
 
 Follow these instructions to get the project up and running on your local machine.
