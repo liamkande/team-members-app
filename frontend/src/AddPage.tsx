@@ -12,13 +12,39 @@ const AddTeamMemberForm: React.FC = () => {
         username: '',
         avatar_url: ''
     })
+    const [errors, setErrors] = useState({
+        first_name: '',
+        last_name: '',
+        phone_number: '',
+        email: '',
+        role: ''
+    })
     const navigate = useNavigate()
+
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return emailRegex.test(email)
+    }
+
+    const validatePhoneNumber = (phoneNumber: string) => {
+        const phoneRegex = /^[0-9]{10}$/
+        return phoneRegex.test(phoneNumber)
+    }
+
+    const validateName = (name: string) => {
+        const nameRegex = /^[A-Za-z]+$/
+        return nameRegex.test(name) && name.length >= 2 && name.length <= 50
+    }
 
     const handleRoleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target
         setFormData(prevState => ({
             ...prevState,
             role: value
+        }))
+        setErrors(prevState => ({
+            ...prevState,
+            role: value ? '' : 'Role is required'
         }))
     }
 
@@ -28,13 +54,33 @@ const AddTeamMemberForm: React.FC = () => {
             ...prevState,
             [name]: value
         }))
+        setErrors(prevState => ({
+            ...prevState,
+            [name]: value ? '' : `${name.replace('_', ' ')} is required`
+        }))
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        const newErrors = {
+            first_name: validateName(formData.first_name) ? '' : 'Invalid first name',
+            last_name: validateName(formData.last_name) ? '' : 'Invalid last name',
+            email: validateEmail(formData.email) ? '' : 'Invalid email address',
+            phone_number: validatePhoneNumber(formData.phone_number) ? '' : 'Invalid phone number',
+            role: formData.role ? '' : 'Role is required'
+        }
+
+        setErrors(newErrors)
+
+        const hasErrors = Object.values(newErrors).some(error => error)
+        if (hasErrors) {
+            return
+        }
+
         try {
-            formData.username = formData.email // sets the username to the email
-            formData.avatar_url = `https://avatars.githubusercontent.com/u/23286067?v=4` // manually adds the avatar_url feel free to change it and collect it from the user
+            formData.username = formData.email
+            formData.avatar_url = `https://avatars.githubusercontent.com/u/23286067?v=4`
             await axios.post('http://127.0.0.1:8000/api/team-members/', formData)
 
             setFormData({
@@ -65,15 +111,19 @@ const AddTeamMemberForm: React.FC = () => {
                     <input className='input-field' type="text" name="first_name" value={formData.first_name}
                            onChange={handleChange}
                            placeholder="First Name" required/>
+                    {errors.first_name && <div className="error-text">{errors.first_name}</div>}
                     <input className='input-field' type="text" name="last_name" value={formData.last_name}
                            onChange={handleChange}
                            placeholder="Last Name" required/>
+                    {errors.last_name && <div className="error-text">{errors.last_name}</div>}
                     <input className='input-field' type="email" name="email" value={formData.email}
                            onChange={handleChange} placeholder="Email"
                            required/>
+                    {errors.email && <div className="error-text">{errors.email}</div>}
                     <input className='input-field' type="tel" name="phone_number" value={formData.phone_number}
                            onChange={handleChange}
                            placeholder="Phone Number" required/>
+                    {errors.phone_number && <div className="error-text">{errors.phone_number}</div>}
                 </div>
                 <div className="radio-container">
                     <div className='sub-title-text'>Role</div>
@@ -91,10 +141,9 @@ const AddTeamMemberForm: React.FC = () => {
                         <input type="radio" name="role" value="admin" checked={formData.role === 'admin'}
                                onChange={handleRoleChange}/>
                     </div>
+                    {errors.role && <div className="error-text">{errors.role}</div>}
                 </div>
-                {/*<input type="url" name="avatar_url" value={formData.avatar_url} onChange={handleChange}*/}
-                {/*       placeholder="Avatar URL" required/>*/}
-                <div className='card-footer' style={{  justifyContent: 'flex-end'}}>
+                <div className='card-footer' style={{ justifyContent: 'flex-end'}}>
                     <button className='save-button' type="submit">Save</button>
                 </div>
             </form>
