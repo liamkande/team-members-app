@@ -1,92 +1,80 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-
-interface TeamMember {
-    id: number
-    first_name: string
-    last_name: string
-    phone_number: string
-    email: string
-    role: string
-    avatar_url?: string
-}
+import React, { useState, useEffect, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { FormDataContext } from './FormDataContext';
 
 const EditPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>()
-    const [formData, setFormData] = useState<TeamMember>({
-        id: 0,
-        first_name: '',
-        last_name: '',
-        phone_number: '',
-        email: '',
-        role: '',
-        avatar_url: '',
-    })
+    const { id } = useParams<{ id: string }>();
+    const context = useContext(FormDataContext);
+    if (!context) {
+        throw new Error("EditPage must be used within a FormDataProvider");
+    }
+
+    const { formData, setFormData } = context;
     const [errors, setErrors] = useState({
         first_name: '',
         last_name: '',
         phone_number: '',
         email: '',
         role: ''
-    })
+    });
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchTeamMember()
-    }, [])
+        fetchTeamMember();
+    }, []);
 
     const fetchTeamMember = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/team-members/${id}/`)
-            setFormData(response.data)
+            const response = await axios.get(`http://127.0.0.1:8000/api/team-members/${id}/`);
+            setFormData(response.data);
         } catch (error) {
-            console.error('Error fetching team member:', error)
+            console.error('Error fetching team member:', error);
         }
-    }
+    };
 
     const validateEmail = (email: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        return emailRegex.test(email)
-    }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
     const validatePhoneNumber = (phoneNumber: string) => {
-        const phoneRegex = /^[0-9]{10}$/
-        return phoneRegex.test(phoneNumber)
-    }
+        const phoneRegex = /^[0-9]{10}$/;
+        return phoneRegex.test(phoneNumber);
+    };
 
     const validateName = (name: string) => {
-        const nameRegex = /^[A-Za-z]+$/
-        return nameRegex.test(name) && name.length >= 2 && name.length <= 50
-    }
+        const nameRegex = /^[A-Za-z]+$/;
+        return nameRegex.test(name) && name.length >= 2 && name.length <= 50;
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
         setFormData(prevState => ({
             ...prevState,
             [name]: value,
-        }))
+        }));
         setErrors(prevState => ({
             ...prevState,
             [name]: value ? '' : `${name.replace('_', ' ')} is required`
-        }))
-    }
+        }));
+    };
 
     const handleRoleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target
+        const { value } = e.target;
         setFormData(prevState => ({
             ...prevState,
             role: value
-        }))
+        }));
         setErrors(prevState => ({
             ...prevState,
             role: value ? '' : 'Role is required'
-        }))
-    }
+        }));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
 
         const newErrors = {
             first_name: validateName(formData.first_name) ? '' : 'Invalid first name',
@@ -94,33 +82,33 @@ const EditPage: React.FC = () => {
             email: validateEmail(formData.email) ? '' : 'Invalid email address',
             phone_number: validatePhoneNumber(formData.phone_number) ? '' : 'Invalid phone number',
             role: formData.role ? '' : 'Role is required'
-        }
+        };
 
-        setErrors(newErrors)
+        setErrors(newErrors);
 
-        const hasErrors = Object.values(newErrors).some(error => error)
+        const hasErrors = Object.values(newErrors).some(error => error);
         if (hasErrors) {
-            return
+            return;
         }
 
         try {
-            await axios.put(`http://127.0.0.1:8000/api/team-members/${id}/`, formData)
-            navigate('/')
-            console.log('Team member updated successfully')
+            await axios.put(`http://127.0.0.1:8000/api/team-members/${id}/`, formData);
+            navigate('/');
+            console.log('Team member updated successfully');
         } catch (error) {
-            console.error('Error updating team member:', error)
+            console.error('Error updating team member:', error);
         }
-    }
+    };
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/team-members/${id}/`)
-            console.log('Team member deleted successfully')
-            navigate('/')
+            await axios.delete(`http://127.0.0.1:8000/api/team-members/${id}/`);
+            console.log('Team member deleted successfully');
+            navigate('/');
         } catch (error) {
-            console.error('Error deleting team member:', error)
+            console.error('Error deleting team member:', error);
         }
-    }
+    };
 
     return (
         <div className='card-container'>
@@ -168,14 +156,17 @@ const EditPage: React.FC = () => {
                     {errors.role && <div className="error-text">{errors.role}</div>}
                 </div>
                 <div className='card-footer' style={formData.role === 'admin' ? {justifyContent: 'space-between'} : {justifyContent: 'flex-end'}}>
-                    {formData.role === 'admin' &&
+                    {formData.role === 'admin' && process.env.NODE_ENV === 'production' &&
                         <button className='delete-button' onClick={handleDelete}>Delete</button>
+                    }
+                    {formData.role === 'admin' && process.env.NODE_ENV === 'development'  &&
+                        <button className='disabled-button'  disabled onClick={handleDelete}>Delete</button>
                     }
                     <button className='save-button' type="submit">Save</button>
                 </div>
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default EditPage
+export default EditPage;

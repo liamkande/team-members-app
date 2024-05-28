@@ -4,18 +4,21 @@ import './App.css'
 import AddPage from './AddPage'
 import EditPage from './EditPage'
 import ListPage from './ListPage'
+import { FormDataProvider } from './FormDataContext'
 
 function App() {
     return (
-        <Router>
-            <div className="App">
-                <Routes>
-                    <Route path="/" element={<ListPage />} />
-                    <Route path="/add" element={<AddPage />} />
-                    <Route path="/edit/:id" element={<EditPage />} />
-                </Routes>
-            </div>
-        </Router>
+        <FormDataProvider>
+            <Router>
+                <div className="App">
+                    <Routes>
+                        <Route path="/" element={<ListPage />} />
+                        <Route path="/add" element={<AddPage />} />
+                        <Route path="/edit/:id" element={<EditPage />} />
+                    </Routes>
+                </div>
+            </Router>
+        </FormDataProvider>
     )
 }
 

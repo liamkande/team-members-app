@@ -106,7 +106,19 @@
   border-radius: 4px;
   margin-top: 10px;
 }
-
+.disabled-button {
+  width: 100px;
+  height: 40px;
+  padding: 0 14px 0 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: lightgray;
+  color: white;
+  border: none;
+  cursor: not-allowed;
+  border-radius: 4px;
+  margin-top: 10px;
+}
 .radio-container {
   display: flex;
   flex-direction: column;
