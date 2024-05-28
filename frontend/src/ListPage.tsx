@@ -14,7 +14,8 @@ const ListPage: React.FC = () => {
     const { teamMembers, setTeamMembers } = context;
 
     useEffect(() => {
-        fetchTeamMembers();
+        fetchTeamMembers()
+            .then(r => console.log('Team members fetched'));
     }, []);
 
     const fetchTeamMembers = async () => {
