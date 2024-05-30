@@ -26,7 +26,7 @@ const EditPage: React.FC = () => {
     }, []);
 
     const fetchTeamMember = async () => {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'production') {
             // Read from local storage in production
             const savedTeamMembers = localStorage.getItem('teamMembers');
             if (savedTeamMembers) {
@@ -105,7 +105,7 @@ const EditPage: React.FC = () => {
         }
 
         try {
-            if (process.env.NODE_ENV === 'development') {
+            if (process.env.NODE_ENV === 'production') {
                 // Update local storage in production
                 const savedTeamMembers = localStorage.getItem('teamMembers');
                 if (savedTeamMembers) {
@@ -129,7 +129,7 @@ const EditPage: React.FC = () => {
 
     const handleDelete = async () => {
         try {
-            if (process.env.NODE_ENV === 'development') {
+            if (process.env.NODE_ENV === 'production') {
                 // Delete from local storage in production
                 const savedTeamMembers = localStorage.getItem('teamMembers');
                 if (savedTeamMembers) {
