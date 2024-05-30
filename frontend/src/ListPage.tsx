@@ -39,7 +39,7 @@ const ListPage: React.FC = () => {
         <div className='card-container'>
             <div className='card-nav' onClick={() => navigate('/add')}>+</div>
             <div className='card-header'>
-                <div className='title-text'>Team Members</div>
+                <div className='title-text'>Team Members 🙌🏾</div>
                 <div className='sub-text'>You have {teamMembers.length} members</div>
                 <br />
                 <br />
