@@ -196,8 +196,10 @@ const EditPage: React.FC = () => {
                     </div>
                     {errors.role && <div className="error-text">{errors.role}</div>}
                 </div>
-                <div className='card-footer' style={{ justifyContent: 'space-between' }}>
-                    <button className='delete-button' type="button" onClick={handleDelete}>Delete</button>
+                <div className='card-footer' style={{ justifyContent: formData.role === 'admin' ? 'space-between' : 'flex-end' }}>
+                    {formData.role === 'admin' &&
+                        <button className='delete-button' type="button" onClick={handleDelete}>Delete</button>
+                    }
                     <button className='save-button' type="submit">Save</button>
                 </div>
             </form>
