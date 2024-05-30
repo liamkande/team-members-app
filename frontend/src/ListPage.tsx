@@ -14,16 +14,24 @@ const ListPage: React.FC = () => {
     const { teamMembers, setTeamMembers } = context;
 
     useEffect(() => {
-        fetchTeamMembers()
-            .then(r => console.log('Team members fetched'));
+        fetchTeamMembers();
     }, []);
 
     const fetchTeamMembers = async () => {
-        try {
-            const response = await axios.get('http://127.0.0.1:8000/api/team-members/');
-            setTeamMembers(response.data);
-        } catch (error) {
-            console.error('Error fetching team members:', error);
+        if (process.env.NODE_ENV === 'production') {
+            // Read from local storage in production
+            const savedTeamMembers = localStorage.getItem('teamMembers');
+            if (savedTeamMembers) {
+                setTeamMembers(JSON.parse(savedTeamMembers));
+            }
+        } else {
+            // Fetch from backend in development
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/team-members/');
+                setTeamMembers(response.data);
+            } catch (error) {
+                console.error('Error fetching team members:', error);
+            }
         }
     };
 
@@ -37,8 +45,8 @@ const ListPage: React.FC = () => {
                 <br />
             </div>
             {teamMembers.map(member => (
-                <div className='card-list' key={member.id}>
-                    <div className='card-item' onClick={() => navigate(`/edit/${member.id}`)}>
+                <div className='card-list' key={member.id || member.email}>
+                    <div className='card-item' onClick={() => navigate(`/edit/${member.id || member.email}`)}>
                         <img className='avatar' src={member.avatar_url} alt={member.first_name} />
                         <div className='card-info'>
                             {member.role === 'admin' ? (
