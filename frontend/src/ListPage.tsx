@@ -7,11 +7,13 @@ const ListPage: React.FC = () => {
     const context = useContext(FormDataContext);
     const navigate = useNavigate();
 
+
     if (!context) {
         throw new Error("ListPage must be used within a FormDataProvider");
     }
 
     const { teamMembers, setTeamMembers } = context;
+    const memberTxt = teamMembers.length <= 1 ? 'member' : 'members';
 
     useEffect(() => {
         fetchTeamMembers();
@@ -40,7 +42,7 @@ const ListPage: React.FC = () => {
             <div className='card-nav' onClick={() => navigate('/add')}>+</div>
             <div className='card-header'>
                 <div className='title-text'>Team Members 🙌🏾</div>
-                <div className='sub-text'>You have {teamMembers.length} members</div>
+                <div className='sub-text'>You have {teamMembers.length} {memberTxt}</div>
                 <br />
                 <br />
             </div>
