@@ -58,6 +58,24 @@ const AddTeamMemberForm: React.FC = () => {
         }));
     };
 
+    const saveDataToLocalStorage = (data: any) => {
+        const existingData = localStorage.getItem('teamMembers');
+        let teamMembers = existingData ? JSON.parse(existingData) : [];
+        teamMembers.push(data);
+        localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+    };
+
+    const downloadDataAsJSON = () => {
+        const data = localStorage.getItem('teamMembers');
+        const blob = new Blob([data || '[]'], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'teamMembers.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -79,7 +97,12 @@ const AddTeamMemberForm: React.FC = () => {
         try {
             formData.username = formData.email;
             formData.avatar_url = `https://avatars.githubusercontent.com/u/23286067?v=4`;
-            await axios.post('http://127.0.0.1:8000/api/team-members/', formData);
+
+            if (process.env.NODE_ENV === 'production') {
+                saveDataToLocalStorage(formData);
+            } else {
+                await axios.post('http://127.0.0.1:8000/api/team-members/', formData);
+            }
 
             setFormData({
                 first_name: '',
@@ -104,45 +127,48 @@ const AddTeamMemberForm: React.FC = () => {
             </div>
             <form onSubmit={handleSubmit}>
                 <div className='input-container'>
-                    <hr/>
+                    <hr />
                     <div className='sub-title-text'>Info</div>
                     <input className='input-field' type="text" name="first_name" value={formData.first_name}
                            onChange={handleChange}
-                           placeholder="First Name" required/>
+                           placeholder="First Name" required />
                     {errors.first_name && <div className="error-text">{errors.first_name}</div>}
                     <input className='input-field' type="text" name="last_name" value={formData.last_name}
                            onChange={handleChange}
-                           placeholder="Last Name" required/>
+                           placeholder="Last Name" required />
                     {errors.last_name && <div className="error-text">{errors.last_name}</div>}
                     <input className='input-field' type="email" name="email" value={formData.email}
                            onChange={handleChange} placeholder="Email"
-                           required/>
+                           required />
                     {errors.email && <div className="error-text">{errors.email}</div>}
                     <input className='input-field' type="tel" name="phone_number" value={formData.phone_number}
                            onChange={handleChange}
-                           placeholder="Phone Number" required/>
+                           placeholder="Phone Number" required />
                     {errors.phone_number && <div className="error-text">{errors.phone_number}</div>}
                 </div>
                 <div className="radio-container">
                     <div className='sub-title-text'>Role</div>
                     <div className='radio-items'>
-                        <div style={formData.role === 'regular' ? {color: 'black'} : {color: 'grey'}}>Regular - Can't
+                        <div style={formData.role === 'regular' ? { color: 'black' } : { color: 'grey' }}>Regular - Can't
                             delete members
                         </div>
                         <input type="radio" name="role" value="regular" checked={formData.role === 'regular'}
-                               onChange={handleRoleChange}/>
+                               onChange={handleRoleChange} />
                     </div>
                     <div className='radio-items'>
-                        <div style={formData.role === 'admin' ? {color: 'black'} : {color: 'grey'}}>Admin - Can delete
+                        <div style={formData.role === 'admin' ? { color: 'black' } : { color: 'grey' }}>Admin - Can delete
                             members
                         </div>
                         <input type="radio" name="role" value="admin" checked={formData.role === 'admin'}
-                               onChange={handleRoleChange}/>
+                               onChange={handleRoleChange} />
                     </div>
                     {errors.role && <div className="error-text">{errors.role}</div>}
                 </div>
-                <div className='card-footer' style={{ justifyContent: 'flex-end'}}>
+                <div className='card-footer' style={{ justifyContent: process.env.NODE_ENV === 'development' ? 'space-between' : 'flex-end' }}>
                     <button className='save-button' type="submit">Save</button>
+                    { process.env.NODE_ENV === 'development' && (
+                        <button type="button" className='save-button' onClick={downloadDataAsJSON}>Download JSON</button>
+                    )}
                 </div>
             </form>
         </div>
