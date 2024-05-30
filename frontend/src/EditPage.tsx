@@ -10,7 +10,7 @@ const EditPage: React.FC = () => {
         throw new Error("EditPage must be used within a FormDataProvider");
     }
 
-    const { formData, setFormData } = context;
+    const { formData, setFormData, teamMembers, setTeamMembers } = context;
     const [errors, setErrors] = useState({
         first_name: '',
         last_name: '',
@@ -26,11 +26,24 @@ const EditPage: React.FC = () => {
     }, []);
 
     const fetchTeamMember = async () => {
-        try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/team-members/${id}/`);
-            setFormData(response.data);
-        } catch (error) {
-            console.error('Error fetching team member:', error);
+        if (process.env.NODE_ENV === 'development') {
+            // Read from local storage in production
+            const savedTeamMembers = localStorage.getItem('teamMembers');
+            if (savedTeamMembers) {
+                const teamMembersArray = JSON.parse(savedTeamMembers);
+                const member = teamMembersArray.find((member: any) => member.id === id || member.email === id);
+                if (member) {
+                    setFormData(member);
+                }
+            }
+        } else {
+            // Fetch from backend in development
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/team-members/${id}/`);
+                setFormData(response.data);
+            } catch (error) {
+                console.error('Error fetching team member:', error);
+            }
         }
     };
 
@@ -92,7 +105,21 @@ const EditPage: React.FC = () => {
         }
 
         try {
-            await axios.put(`http://127.0.0.1:8000/api/team-members/${id}/`, formData);
+            if (process.env.NODE_ENV === 'development') {
+                // Update local storage in production
+                const savedTeamMembers = localStorage.getItem('teamMembers');
+                if (savedTeamMembers) {
+                    const teamMembersArray = JSON.parse(savedTeamMembers);
+                    const updatedTeamMembers = teamMembersArray.map((member: any) =>
+                        member.id === id || member.email === id ? formData : member
+                    );
+                    localStorage.setItem('teamMembers', JSON.stringify(updatedTeamMembers));
+                    setTeamMembers(updatedTeamMembers);
+                }
+            } else {
+                // Update backend in development
+                await axios.put(`http://127.0.0.1:8000/api/team-members/${id}/`, formData);
+            }
             navigate('/');
             console.log('Team member updated successfully');
         } catch (error) {
@@ -102,7 +129,21 @@ const EditPage: React.FC = () => {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/team-members/${id}/`);
+            if (process.env.NODE_ENV === 'development') {
+                // Delete from local storage in production
+                const savedTeamMembers = localStorage.getItem('teamMembers');
+                if (savedTeamMembers) {
+                    const teamMembersArray = JSON.parse(savedTeamMembers);
+                    const updatedTeamMembers = teamMembersArray.filter((member: any) =>
+                        member.id !== id && member.email !== id
+                    );
+                    localStorage.setItem('teamMembers', JSON.stringify(updatedTeamMembers));
+                    setTeamMembers(updatedTeamMembers);
+                }
+            } else {
+                // Delete from backend in development
+                await axios.delete(`http://127.0.0.1:8000/api/team-members/${id}/`);
+            }
             console.log('Team member deleted successfully');
             navigate('/');
         } catch (error) {
@@ -155,13 +196,8 @@ const EditPage: React.FC = () => {
                     </div>
                     {errors.role && <div className="error-text">{errors.role}</div>}
                 </div>
-                <div className='card-footer' style={formData.role === 'admin' ? {justifyContent: 'space-between'} : {justifyContent: 'flex-end'}}>
-                    {formData.role === 'admin' && process.env.NODE_ENV === 'production' &&
-                        <button className='delete-button' onClick={handleDelete}>Delete</button>
-                    }
-                    {formData.role === 'admin' && process.env.NODE_ENV === 'development'  &&
-                        <button className='disabled-button'  disabled onClick={handleDelete}>Delete</button>
-                    }
+                <div className='card-footer' style={{ justifyContent: 'space-between' }}>
+                    <button className='delete-button' type="button" onClick={handleDelete}>Delete</button>
                     <button className='save-button' type="submit">Save</button>
                 </div>
             </form>
