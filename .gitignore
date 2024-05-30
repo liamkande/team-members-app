@@ -3,6 +3,7 @@
 /workspace.xml
 /frontend/node_modules/
 /backend/node_modules/
+/frontend/build/
 
 # Editor-based HTTP Client requests
 /httpRequests/

@@ -40,14 +40,14 @@ const ListPage: React.FC = () => {
             <div className='card-nav' onClick={() => navigate('/add')}>+</div>
             <div className='card-header'>
                 <div className='title-text'>Team Members</div>
-                <div className='sub-text'>You have {teamMembers.length} team members</div>
+                <div className='sub-text'>You have {teamMembers.length} members</div>
                 <br />
                 <br />
             </div>
-            {teamMembers.map(member => (
+            {teamMembers.length ? teamMembers.map(member => (
                 <div className='card-list' key={member.id || member.email}>
                     <div className='card-item' onClick={() => navigate(`/edit/${member.id || member.email}`)}>
-                        <img className='avatar' src={member.avatar_url} alt={member.first_name} />
+                        <img className='avatar' src={member.avatar_url} alt={member.first_name}/>
                         <div className='card-info'>
                             {member.role === 'admin' ? (
                                 <div className='main-text'>{member.first_name} {member.last_name} ({member.role})</div>
@@ -59,7 +59,9 @@ const ListPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            ))}
+            )) : (
+                <div className='card-list'> No team members found. Please add a team member!</div>
+            )}
         </div>
     );
 };
